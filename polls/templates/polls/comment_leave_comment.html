@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leave a Comment</title>
+</head>
+<body>
+    <h1>Leave your comment about <FONT COLOR="#008000">"{{ question.question_text }}"</FONT> here</h1>
+    
+    <form method="post" action="{% url 'polls:leave_comment' question.id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+
+
+    <p>{{ comment }}</p> <!-- Tee tähän XSS-haavoittuvuus -->
+
+
+
+    <br/>
+    <a href="{% url 'polls:index' %}">Back to polls</a>
+</body>
+</html>
