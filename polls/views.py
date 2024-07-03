@@ -117,7 +117,7 @@ def leave_comment(request, question_id):
             comment = form.save(commit=False)
             comment.question = question
             comment.save()
-            return HttpResponseRedirect(reverse('polls:comment_thanks'))
+            return HttpResponseRedirect(reverse('polls:comment_thanks', args=(question.id,)))
     else:
         form = CommentForm()
 
@@ -136,6 +136,15 @@ def leave_comment(request, question_id):
 #        'question': question
 #    })
 
-def comment_thanks(request):
-    return render(request, 'polls/comment_thank_you.html')
+def comment_thanks(request, question_id):
+    try:
+        question = Question.objects.get(pk=question_id)
+        comments = Comment.objects.filter(question=question).order_by('-created_at')
+    except Question.DoesNotExist:
+        raise Http404("Question does not exist")
+
+    return render(request, 'polls/comment_thank_you.html', {
+        'question': question,
+        'comments': comments
+    })
 

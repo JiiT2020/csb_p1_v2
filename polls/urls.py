@@ -21,5 +21,5 @@ urlpatterns = [
 
     # ex: /polls/1/comment/  # äänestysnumerokohtainen kommentin jättäminen
     path('<int:question_id>/comments/', views.leave_comment, name='leave_comment'),
-    path('comment_thank_you/', views.comment_thanks, name='comment_thanks')
+    path('<int:question_id>/comment_thank_you/', views.comment_thanks, name='comment_thanks')
 ]

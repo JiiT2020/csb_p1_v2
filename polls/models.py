@@ -25,4 +25,8 @@ class Choice(models.Model):
 class Comment(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     text = models.TextField()
+    name = models.CharField(max_length=30, blank=True, null=True)
+    email = models.EmailField(blank=False, null=True)  # blank = False = sähköposti vaaditaan vaikka sitä ei näytetä => laitetaan tietokantaan ja kokeillaan häkätä
     created_at = models.DateTimeField(auto_now_add=True)
+
+    

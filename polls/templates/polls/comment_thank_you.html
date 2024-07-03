@@ -1,8 +1,29 @@
 
-<h2>Thank you for your comment. Every opinion counts!</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Thank you</title>
+</head>
+<body>
+    <h2>Thank you for your comment. Every opinion counts!</h2>
 
-<p>Nothing here yet.</p>
 
-<a href="{% url 'polls:index' %}">Back to polls</a>
+    <br/>
+    <a href="{% url 'polls:index' %}">Back to polls</a>
 
-<p>Nothing here yet.</p>
+    <h3>Comments about <FONT COLOR="#008000">"{{ question.question_text }}"</FONT>:</h3>
+
+
+
+    <ul>
+        {% for comment in comments %}
+
+        <!-- Below is XSS-vulnerability, because comment.text is treated as "safe", although XSS-injection may have (and has) happned elsewhere-->
+        <li>({{ comment.created_at }}): {{ comment.text|safe }} ({% if comment.name %} {{ comment.name }} {% else %} anonymous {% endif %})</li>
+        {% empty %}
+            <li>No comments yet.</li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
