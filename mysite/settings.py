@@ -41,7 +41,14 @@ INSTALLED_APPS = [
     'polls.apps.PollsConfig',
 #    'django.contrib.sites',
 #    'django_comments',
+    'django_bleach',             # django_bleach is used for sanitizing end-user's comment-field
 ]
+
+BLEACH_ALLOWED_TAGS = []         # these attributes adjust allowed and unallowed content/characters 
+BLEACH_ALLOWED_ATTRIBUTES = {}   # in comments-field (could be used elsewhere too)
+BLEACH_ALLOWED_STYLES = []       # now these are set to pretty strict
+BLEACH_STRIP_TAGS = True         # for details, see: https://pypi.org/project/django-bleach/
+BLEACH_STRIP_COMMENTS = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

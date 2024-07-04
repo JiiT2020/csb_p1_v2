@@ -4,6 +4,8 @@ from django.db import models
 from django.utils import timezone
 # Create your models here.
 
+from django_bleach.models import BleachField
+
 
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
@@ -24,7 +26,8 @@ class Choice(models.Model):
 
 class Comment(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    text = models.TextField()
+    # text = models.TextField()   # here (together with comment_thank_you.html) is a vulnerability for XSS-injection
+    text = BleachField()          # this fix bleaches (sanitizes) end-user's input before it is taken to the database
     name = models.CharField(max_length=30, blank=True, null=True)
     email = models.EmailField(blank=False, null=True)  # blank = False = sähköposti vaaditaan vaikka sitä ei näytetä => laitetaan tietokantaan ja kokeillaan häkätä
     created_at = models.DateTimeField(auto_now_add=True)
