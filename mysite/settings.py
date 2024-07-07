@@ -39,10 +39,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'polls.apps.PollsConfig',
-#    'django.contrib.sites',
-#    'django_comments',
+    'django.contrib.sites',
+#    'django_comments', # en käyttänytkään tätä
     'django_bleach',             # django_bleach is used for sanitizing end-user's comment-field
+
+     # The following apps are required for django-allauth:
+    'allauth',
+    'allauth.account',
 ]
+
+SITE_ID = 1
 
 BLEACH_ALLOWED_TAGS = []         # these attributes adjust allowed and unallowed content/characters 
 BLEACH_ALLOWED_ATTRIBUTES = {}   # in comments-field (could be used elsewhere too)
@@ -50,15 +56,29 @@ BLEACH_ALLOWED_STYLES = []       # now these are set to pretty strict
 BLEACH_STRIP_TAGS = True         # for details, see: https://pypi.org/project/django-bleach/
 BLEACH_STRIP_COMMENTS = True
 
+# alla django-allauthin vaatimaa, (ks. https://docs.allauth.org/en/latest/installation/quickstart.html)
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',      # csrf-fix uses this, i.e. django validates the form automatically on backend
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "allauth.account.middleware.AccountMiddleware",   # django-allauthin vaatima
+
 ]
 
 ROOT_URLCONF = 'mysite.urls'

@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Question, Choice, Comment
 from django.template import loader  # obsolete, not needed after 'shorcut' used
-from django.http import Http404  # obsolete, not needed after 'shorcut' used
+from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
@@ -86,6 +86,10 @@ class ResultsView(generic.DetailView):
 #    return HttpResponse("You're voting on question %s." % question_id)
 
 def vote(request, question_id):
+
+    if not request.user.is_authenticated:           # this fixes the tampering of detail.html user authentication (mimt-attack against incomplete user authentication)
+        return HttpResponseForbidden("You must be logged in to vote !")
+
     question = get_object_or_404(Question, pk=question_id)
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])

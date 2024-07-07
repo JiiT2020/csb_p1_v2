@@ -1,16 +1,26 @@
 <h1>Poll #{{ question.id }}: {{ question.question_text }}</h1>
 
-{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+{% if user.is_authenticated %}
 
-<form action="{% url 'polls:vote' question.id %}" method="post">
-{% csrf_token %}
-{% for choice in question.choice_set.all %}
-    <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
-    <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
-{% endfor %}
-</br>
-<input type="submit" value="Vote">
-</form>
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+    <form action="{% url 'polls:vote' question.id %}" method="post">
+    {% csrf_token %}  <!-- csrf_tokenin lisäämällä estyy laiton äänestäminen (kun settings.py:ssä on django.middleware.csrf.CsrfViewMiddleware)-->
+    {% for choice in question.choice_set.all %}
+        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+        <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+    {% endfor %}
+    </br>
+    <input type="submit" value="Vote">
+    </form>
+
+{% else %}
+    <br/>
+    <p>Only registered users can vote. You need to sign in before you can vote.</p>
+    <a href="{% url 'account_login' %}">Sign in</a>
+    <br/>
+
+{% endif %}
 
 <br/>
 <a href="{% url 'polls:index' %}">Cancel and go back to polls</a>
