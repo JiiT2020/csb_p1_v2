@@ -46,9 +46,8 @@ INSTALLED_APPS = [
      # The following apps are required for django-allauth:
     'allauth',
     'allauth.account',
+    'upload',
 ]
-
-SITE_ID = 1
 
 BLEACH_ALLOWED_TAGS = []         # these attributes adjust allowed and unallowed content/characters 
 BLEACH_ALLOWED_ATTRIBUTES = {}   # in comments-field (could be used elsewhere too)

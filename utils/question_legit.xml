@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<data>
+    <question>
+        <text>How long does war last?</text>
+        <choice>Two days</choice>
+        <choice>Two years</choice>
+        <choice>Two decades</choice>
+    </question>
+    <question>
+        <text>Coffee or tea?</text>
+        <choice>Coffee</choice>
+        <choice>Tea</choice>
+        <choice>Yes, please!</choice>
+    </question>
+</data>

