@@ -12,6 +12,7 @@ from django.views import generic
 #from django_comments.forms import CommentForm
 #from django_comments.models import Comment
 from .forms import CommentForm
+import requests
 
 
 #class ModifiedCommentForm(CommentForm):
@@ -152,3 +153,15 @@ def comment_thanks(request, question_id):
         'comments': comments
     })
 
+def go_to_homepage(request, comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+
+    try:
+        response = requests.get(comment.url)
+        content = response.text
+        print('kommentin url', comment.url)
+        #print('content', content)
+    except requests.RequestException as e:
+        return HttpResponse(f"An error occurred: {e}")
+
+    return render(request, 'polls/comment_show_homepage.html', {'name': comment.name, 'url': comment.url, 'content': content})

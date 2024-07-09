@@ -6,24 +6,24 @@
 </head>
 <body>
     <h2>Thank you for your comment. Every opinion counts!</h2>
-
-
     <br/>
     <a href="{% url 'polls:index' %}">Back to polls</a>
 
     <h3>Comments about <FONT COLOR="#008000">"{{ question.question_text }}"</FONT>:</h3>
 
-
-
     <ul>
         {% for comment in comments %}
 
-        <!-- Below is XSS-vulnerability, because comment.text is treated as "safe", although XSS-injection may have (and has) happned elsewhere-->
-        <li>({{ comment.created_at }}): {{ comment.text|safe }} ({% if comment.name %} {{ comment.name }} {% else %} anonymous {% endif %})</li>
-        {% empty %}
+        <!-- Row 19 below has XSS-vulnerability, because comment.text is treated as "safe", although XSS-injection may have (and has) happned elsewhere-->
+        <!-- BUT fixing frontend is not enough, so real fix is in polls/models.py, see class Comment and BleachField() rows 26-27-->
+        <li>({{ comment.created_at }}): {{ comment.text|safe }} ({% if comment.name %} {{ comment.name }} ) Homepage: <a href="{% url 'polls:fetch_homepage' comment.id %}">{{ comment.url }}</a> {% else %} anonymous {% endif %}</li>
+        <li style="display: none">Id: {{ comment.id }} ({{ comment.created_at }}): {{ comment.text|safe }} ({% if comment.name %} Name: {{ comment.name }} ) Email: {{ comment.email }} Homepage: <a href="{% url 'polls:fetch_homepage' comment.id %}">{{ comment.url }}</a> {% else %} anonymous {% endif %}<li>
+
+        <script>var email = "{{ comment.email }}"; console.log("email: " +email)</script>
+            {% empty %}
             <li>No comments yet.</li>
         {% endfor %}
     </ul>
-
 </body>
 </html>
+

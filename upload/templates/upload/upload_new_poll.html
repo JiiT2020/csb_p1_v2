@@ -1,7 +1,21 @@
 
 <h2>Upload new poll</h2>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Upload</button>
-</form>
+
+{% if authenticated %}
+    User:{{ user.username }} &nbsp;&nbsp;&nbsp; Email:{{ user.email }}
+{% endif %}
+
+    <p>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            {% if authenticated %}
+                <button type="submit">Upload</button>
+            {% else %}
+                <p>You must sign in before you can upload new polls.</p>
+                <a href="{% url 'account_login' %}">Sign in</a>
+            {% endif %}
+        
+        </form>
+    </p>

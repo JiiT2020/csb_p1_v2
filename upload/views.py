@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required 
 
 # Create your views here.
 
@@ -11,14 +13,16 @@ from .forms import UploadPoll
 #def upload_new_poll(request):
 #    return render(request, 'upload/upload_new_poll.html')
 
+@csrf_exempt
+@login_required
 def upload_new_poll(request):
     if request.method == 'POST':
         form = UploadPoll(request.POST, request.FILES)
         if form.is_valid():
             xml_file = request.FILES['new_poll']
             try:
-                #parser = ET.XMLParser(resolve_entities=True)  # XXE vulnerability causes parser to resolve external entities
-                parser = ET.XMLParser(resolve_entities=False)  # XXE-fix: This setting to False causes external entities not to be resolved
+                parser = ET.XMLParser(resolve_entities=True)  # XXE vulnerability causes parser to resolve external entities
+                #parser = ET.XMLParser(resolve_entities=False)  # XXE-fix: This setting to False causes external entities not to be resolved
                 tree = ET.parse(xml_file, parser)
                 root = tree.getroot()
  
@@ -44,7 +48,7 @@ def upload_new_poll(request):
     else:
         form = UploadPoll()
     
-    return render(request, 'upload/upload_new_poll.html', {'form': form})
+    return render(request, 'upload/upload_new_poll.html', {'form': form, 'user': request.user, 'authenticated': request.user.is_authenticated })
 
 def update_thankyou(request):
     return render(request, 'upload/thankyou.html')
