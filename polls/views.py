@@ -13,6 +13,9 @@ from django.views import generic
 #from django_comments.models import Comment
 from .forms import CommentForm
 import requests
+from django.db.models import Q
+from django.db.models import Count 
+from django.db import connection
 
 
 #class ModifiedCommentForm(CommentForm):
@@ -49,8 +52,11 @@ class IndexView(generic.ListView):
     context_object_name = 'latest_question_list'
 
     def get_queryset(self):
-        """Return the last five published questions."""
-        return Question.objects.order_by('-pub_date')[:5]
+        #"""Return the last five published questions."""
+        #return Question.objects.order_by('-pub_date')[:5]
+
+        most_popular_poll = Question.objects.annotate(num_votes=Count('choice')).order_by('-num_votes')[:2]
+        return most_popular_poll
 
 #def detail(request, question_id):
 #    return HttpResponse("You're looking at question %s." % question_id)
@@ -165,3 +171,42 @@ def go_to_homepage(request, comment_id):
         return HttpResponse(f"An error occurred: {e}")
 
     return render(request, 'polls/comment_show_homepage.html', {'name': comment.name, 'url': comment.url, 'content': content})
+
+def search(request):
+    query = request.GET.get('q')
+    if query:
+        questions = Question.objects.filter(
+            Q(question_text__icontains=query) |      # Hae kysymyksiä ja
+            Q(choice__choice_text__icontains=query)  # vaihtoehtoja
+        ).distinct()                                 # Poistaatuplat
+
+    else:
+        questions = Question.objects.all()
+
+    return render(request, 'polls/polls_search.html', {'questions': questions, 'query': query})
+
+
+""" ALLA OLEVA EI LÄHDE TOIMIMAAN
+
+def search(request):
+    query = request.GET.get('q', '')
+    print('query', query)
+    if query:
+        sql_query = 
+            SELECT * 
+            FROM polls_question 
+            WHERE question_text LIKE ?
+        
+        with connection.cursor() as cursor:
+            cursor.execute(sql_query, [f'%{query}%'])
+            questions = cursor.fetchall()
+        print('questions', questions)
+    else:
+        questions = Question.objects.all()
+        print('questions', questions)
+
+    return render(request, 'polls/polls_search.html', {'questions': questions, 'query': query})
+
+
+"""
+

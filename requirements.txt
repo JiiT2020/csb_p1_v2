@@ -1,0 +1,13 @@
+
+# out-dated (vulnerable) components NOTE: I didn't use these in eventual exercise answer, due to problems with dependencies
+#django-debug-toolbar==2.2
+#django-bleach==3.1.0
+#django-allauth==0.40.0
+#lxml==4.6.4
+
+django-debug-toolbar==4.4.2
+django-bleach==3.1.0
+django-allauth==0.63.3
+lxml==4.8.0
+
+requests==2.25.1

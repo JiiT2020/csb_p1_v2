@@ -22,6 +22,6 @@ urlpatterns = [
     path('polls/', include('polls.urls')),
     path('accounts/', include('allauth.urls')),
     path('upload/', include('upload.urls')),
-    #path('__debug__/', include('debug_toolbar.urls')),
+    path('__debug__/', include('debug_toolbar.urls')),
     path('', lambda request: HttpResponseRedirect('/polls/')),
 ]

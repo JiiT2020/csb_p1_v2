@@ -37,15 +37,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #'debug_toolbar',
+    'debug_toolbar',
     'polls.apps.PollsConfig',
     'django.contrib.sites',
-#    'django_comments', # en käyttänytkään tätä
+    #'django_comments',          # en käyttänytkään tätä
     'django_bleach',             # django_bleach is used for sanitizing end-user's comment-field
 
      # The following apps are required for django-allauth:
     'allauth',
     'allauth.account',
+
     'upload',
 ]
 
@@ -79,7 +80,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "allauth.account.middleware.AccountMiddleware",   # django-allauthin vaatima
-
+    "polls.middleware.DisableCSRFMiddleware",  # index.html:ssä olevan iframen tominnallisuuden enabloimiseksi
 ]
 
 ROOT_URLCONF = 'mysite.urls'

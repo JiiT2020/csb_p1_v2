@@ -5,6 +5,16 @@ installation instructions if needed
 
 There are other vulnerabilities and/or vulnerability strawmans in the code. I sketched those during the process but they didn't end up to my selection of five real threats.
 
+Installation in virtual environment:
+
+python3 -m venv poll_app
+source poll_app/bin/activate
+pip install -r requirements.txt
+python3 manage.py runserver
+...
+deactivate
+rm -rf venv
+
 FLAW 1: A07:2017-CROSS-SITE SCRIPTING (XSS-injection)
 
 exact source link pinpointing flaw 1...
@@ -33,16 +43,46 @@ This flaw is fixed by verifying in backend that the user is signed in. Django pr
 Also, the exemption of not demanding CSRF has to be removed (upload/views.py, deleting row 16 (and row 2)).
 
 
-
 Flaw 4: A03:2017-SENSITIVE DATA EXPOSURE
+polls/comment_thank_you.html
 
-Sensitive data is also leaking due to forgotten console.logs and  <li style="display: none">-component in comment_thank_you.html. Viewing the page via developer tools, email-addresses of the commentators may be seen.
+Sensitive data is leaking due to forgotten console.logs and  <li style="display: none">-component in comment_thank_you.html. Viewing the page via developer tools, email-addresses of the commentators may be seen.
 
 Fix is to remove the script which causes console.logging (row 22) and removing the <li style="display: none"> tagged text (row 20), as they are obsolete and the developer has been using them in development phase.
 
-...
 
-FLAW 5:
+FLAW 5: A09:2017-USING COMPONENTS WITH KNOWN VULNERABILITIES
+
+
+*******************EI TOIMI NÄIN*****************EI BUGAA !************************
+
+Vulnerability in ./requirements.txt
+
+An old component versions have slipped in to installation instructions in requirements.txt. It installs django-debug-toolbar==2.2
+django-bleach==3.1.0
+django-allauth==0.40.0
+lxml==4.6.4
+all of which except django-bleach are known to contain vulnerabilities with medium or high ranking.
+
+(Note: not all of those vulnerabilities can be used for exploiting this app, for example django-allauth component's account hijacking (CVE-2019-19844) vulnerability would require Postgres.)
+
+fix is to upgrade components to newer versions, like:
+django-debug-toolbar==2.3
+django-bleach==3.1.0
+django-allauth==0.63.3
+lxml==5.2.2
+
 exact source link pinpointing flaw 5...
 description of flaw 5...
 how to fix it...
+
+Kokeile tämän sijaan tehdä SQL injection searchiin viidentenä vulnerabilitynä
+
+
+
+
+
+
+
+
+Lisäksi! Tarkista miten csrf käyttäytyy kun koodiin tuli csrfMiddleware-juttu (settings.py ja middleware.py) iframen toimimisen vuoksi. Eli selvitä miten csrf_exempt käyttäytyy eri tilanteissa. Voiko sen jättää pois (eli toimiiko ilman csrf_exemptiä) ja jos sen voi jättää pois, niin saako explisiittisesti korjattua jolalin %csrfllä?

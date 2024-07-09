@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Polls</title>
+</head>
+<body>
+    <h2>Search for Polls</h2>
+
+    <form method="GET">
+        <input type="text" name="q" placeholder="Search word or phrase...">
+        <button type="submit">Search</button>
+    </form>
+    {% if query %}
+        <h2>Resulting polls for "{{ query }}"</h2>
+    {% endif %}
+    <ul>
+        {% for question in questions %}
+            <li>
+                <h3><a href="{% url 'polls:detail' question.id %}" target="_top">{{ question.question_text }}</a></h3>
+                <ul>
+                    {% for choice in question.choice_set.all %}
+                        <li>{{ choice.choice_text }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% empty %}
+            <li>No results found.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
