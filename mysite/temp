@@ -1,0 +1,34 @@
+
+FLAW:
+Broken access controllia voisi myös olla pääsy admin/-sivulle
+=> korjaus settings.py:ssä
+
+
+
+FLAW : A09:2017-USING COMPONENTS WITH KNOWN VULNERABILITIES
+
+
+*******************EI TOIMI NÄIN*****************EI BUGAA !************************
+
+Vulnerability in ./requirements.txt
+
+An old component versions have slipped in to installation instructions in requirements.txt. It installs django-debug-toolbar==2.2
+django-bleach==3.1.0
+django-allauth==0.40.0
+lxml==4.6.4
+all of which except django-bleach are known to contain vulnerabilities with medium or high ranking.
+
+(Note: not all of those vulnerabilities can be used for exploiting this app, for example django-allauth component's account hijacking (CVE-2019-19844) vulnerability would require Postgres.)
+
+fix is to upgrade components to newer versions, like:
+django-debug-toolbar==2.3
+django-bleach==3.1.0
+django-allauth==0.63.3
+lxml==5.2.2
+
+exact source link pinpointing flaw 5...
+description of flaw 5...
+how to fix it...
+
+Kokeile tämän sijaan tehdä SQL injection searchiin viidentenä vulnerabilitynä
+
