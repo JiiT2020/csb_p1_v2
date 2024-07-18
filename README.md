@@ -23,17 +23,13 @@ rm -rf venv
 
 ## FLAW 1: A07:2017-CROSS-SITE SCRIPTING (XSS-injection)
 
-exact source link pinpointing flaw 1...
-description of flaw 1...
-how to fix it...
-
 https://github.com/JiiT2020/csb_p1_v2/blob/master/polls/models.py#L26
 
 This flaw allows XSS-injection via comment's text field. Once a vulnerability is injected, it ends up to database and will be executed on any user's terminal who will be viewing comments. Front end allows usafe html-content to be rendered (see: {{ comment.text|safe }} on row 19 of [comment_thank_you.html](https://github.com/JiiT2020/csb_p1_v2/blob/master/polls/templates/polls/comment_thank_you.html#L19). However, fixing the frontend wouldn't fix the actual problem, which is in polls/models.py where plain text (text = models.TextField() on row 26) is accepted from the end-user and that text is stored to database as such. This can be demonstrated by uploading a comment: ```<script>alert('xss-injection attack')</script>```
 
 Fix is in [polls/models.py, row 27](https://github.com/JiiT2020/csb_p1_v2/blob/master/polls/models.py#L27) which shall replace row 26. On row 27 the BleachField() sanitizes (i.e. removes illegal characters from) the comment text field before it is stored into the database.
 
-[Also {{ comment.text|safe }} may be changed to {{ comment.text }} in comment_thank_you.html, BUT that is not enough to make the service safe.]
+[Also {{ comment.text|safe }} may be changed to {{ comment.text }} in [comment_thank_you.html](https://github.com/JiiT2020/csb_p1_v2/blob/master/polls/templates/polls/comment_thank_you.html#L19), BUT that is not enough to make the service safe.]
 
 
 ## FLAW 2: A04:2017-XML EXTERNAL ENTITIES
@@ -48,13 +44,15 @@ This is fixed by disabling the XML-parser to resolve entities. Fix on [row 25 of
 ## FLAW 3: A05:2017-BROKEN ACCESS CONTROL (+CSRF)
 
 https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L16
+and
+https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L17
 
-This vulnerability utilises CSRF and demonstration also requires exmpting it in one place. Since Django framework takes care of CSRF automatically, it has to be exempt. CSRF is exempt for upload_new_poll-function in upload/views.py (rows 2 and 16). (Using CSRF as a flaw is explicitly allowed in the exercise instructions, so here I'm actually learning the impact of two (2) flaws.)
+This vulnerability utilises CSRF and demonstration also requires exmpting it in one place. Since Django framework takes care of CSRF automatically, it has to be exempt. CSRF is exempt for upload_new_poll-function in upload/views.py ([rows 2](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L2) and [16](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L16)). (Using CSRF as a flaw is explicitly allowed in the exercise instructions, so here I'm actually learning the impact of two (2) flaws.)
 
 Anybody can vote anonymously, but uploading new polls should be possible for registered users only. Uploading happens via 127.0.0.1:8000/upload.  Now the upload/-page requests to sign in, if the user is not yet signed in. But vulnerability is that only the client checks if the user is signed in or not. So, by using e.g. Burpsuite a new_vote-xml-file may be POSTed to the backend without singing in. This may be demonstrated by copying a valid POST request (of a signed-in user), altering the poll questions and choices, and then POSTing it to backend once the user is signed out. 
 
-This flaw is fixed by verifying in backend that the user is signed in. Django provides a "user.is_authenticated"-attribute for that. It is imported (upload/views.py row 3) and taken into use (upload/views.py row 17).
-Also, the exemption of not demanding CSRF has to be removed (upload/views.py, deleting row 16 (and row 2)).
+This flaw is fixed by verifying in backend that the user is signed in. Django provides a "user.is_authenticated"-attribute for that. It is imported [(upload/views.py row 3)](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L3) and taken into use [(upload/views.py row 17)](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L17).
+Also, the exemption of not demanding CSRF has to be removed ([upload/views.py, deleting row 16](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L16) (and [on row 2](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L2))).
 
 
 ## Flaw 4: A03:2017-SENSITIVE DATA EXPOSURE
