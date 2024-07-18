@@ -2,9 +2,9 @@
 
 LINK: [link to the repository](https://github.com/JiiT2020/csb_p1_v2/tree/master)
 
-This application is based on Django starter webapp (polls) [ref: https://docs.djangoproject.com/en/3.1/intro/tutorial01/] which was pointed out in Project I exercise instructions. I have additionally extended the service and briefly the user can: register to the service, login/logout, cast votes in polls, leave anonymous comments per poll after voting, search for polls and upload new polls using xml-template.
+This application is based on Django starter webapp (polls) [ref: https://docs.djangoproject.com/en/3.1/intro/tutorial01/] which was pointed out as a possible baseline for Project I in exercise instructions. I have additionally extended the service and now briefly the user can: register to the service, login/logout, cast votes various polls, leave anonymous comments per each poll after voting, search for polls and upload new polls using xml-template.
 
-I have chosen below five OWASP-flaws according to OWASP 2017 top-ten-list. However, there are other vulnerabilities and/or vulnerability strawmans in the code. I sketched those during the process but they didn't qualify / end up to my selection of five real threats.
+I have chosen below five OWASP-flaws according to **OWASP 2017 top-ten**-list. However, there are other vulnerabilities and/or vulnerability strawmans in the code. I sketched those during the process but they didn't qualify / end up to my selection of five real flaws/threats.
 
 Installation in virtual environment:
 ```bash
@@ -70,7 +70,7 @@ Fix is to [remove the script which causes console.logging (row 22)](https://gith
 
 https://github.com/JiiT2020/csb_p1_v2/blob/master/mysite/settings.py#L26
 
-Debugging has been forgotten to "True" in settings.py, line 26. (Furthermore, default password has been left to the service.)
+Debugging has been forgotten to "True" in settings.py, line 26. (Furthermore, default password for "admin" has been left to the service.)
 
 Having debugging set to "True" anybody can see details of error messages without any limitations. This may lead to disclosure of sensitive information about for example environmental variables, database-/API-keys or alike.
 
