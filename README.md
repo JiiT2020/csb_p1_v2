@@ -2,9 +2,9 @@
 
 LINK: [link to the repository](https://github.com/JiiT2020/csb_p1_v2/tree/master)
 
-This application is based on Django starter webapp (polls) [ref: https://docs.djangoproject.com/en/3.1/intro/tutorial01/] which was pointed out in Project I exercise instructions. I have additionally extended the service and briefly the user can: register to the service, login/logout, cast votes in polls, leave anonytmous comments per poll after voting, search for polls and upload new polls using xml-template.
+This application is based on Django starter webapp (polls) [ref: https://docs.djangoproject.com/en/3.1/intro/tutorial01/] which was pointed out in Project I exercise instructions. I have additionally extended the service and briefly the user can: register to the service, login/logout, cast votes in polls, leave anonymous comments per poll after voting, search for polls and upload new polls using xml-template.
 
-I have chosen below five OWASP-flaws according to 2017 top-ten-list. However, there are other vulnerabilities and/or vulnerability strawmans in the code. I sketched those during the process but they didn't qualify / end up to my selection of five real threats.
+I have chosen below five OWASP-flaws according to OWASP 2017 top-ten-list. However, there are other vulnerabilities and/or vulnerability strawmans in the code. I sketched those during the process but they didn't qualify / end up to my selection of five real threats.
 
 Installation in virtual environment:
 ```bash
@@ -55,9 +55,9 @@ Also, the exemption of not demanding CSRF has to be removed (upload/views.py, de
 ## Flaw 4: A03:2017-SENSITIVE DATA EXPOSURE
 polls/comment_thank_you.html
 
-Sensitive data is leaking due to forgotten development phase console.logs and  <li style="display: none">-component in comment_thank_you.html. Suchkind of lines are typically added in development phase, to see what values certain variables are holding e.g. if the DB has returned correct values needed at certain point of development. Due to these, viewing the page via browser's Developer tools, email-addresses of the commentators may be seen although emails are supposed to be sensitive&hidden. And explicitly unassociated with anonymous comments.
+Sensitive data is leaking due to forgotten development phase console.logs and ```<li style="display: none">```-component in comment_thank_you.html. Suchkind of lines are typically added in development phase, to see what values certain variables are holding e.g. if the DB has returned correct values needed at certain point of development. Due to these, viewing the page via browser's Developer tools, email-addresses of the commentators may be seen although emails are supposed to be sensitive&hidden. And explicitly unassociated with anonymous comments.
 
-Fix is to remove the script which causes console.logging (row 22) and removing the <li style="display: none"> tagged text (row 20), as they are obsolete and the developer has been utilizing them in development phase.
+Fix is to remove the script which causes console.logging (row 22) and removing the ```<li style="display: none">``` tagged text (row 20), as they are obsolete and the developer has been utilizing them in development phase.
 
 
 ## FLAW 5: A06:2017-SECURITY MISCONFIGURATION
