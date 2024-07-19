@@ -1,7 +1,7 @@
 
 FLAW:
-Broken access controllia voisi myös olla pääsy admin/-sivulle
-=> korjaus settings.py:ssä
+Broken access controllia voisi myös olla pääsy ylipäänsä admin/-sivulle
+=> korjaus tulisi olemaan settings.py:ssä
 
 
 
@@ -30,5 +30,9 @@ exact source link pinpointing flaw 5...
 description of flaw 5...
 how to fix it...
 
-Kokeile tämän sijaan tehdä SQL injection searchiin viidentenä vulnerabilitynä
 
+FLAW: Kokeile tämän sijaan tehdä SQL injection searchiin viidentenä vulnerabilitynä
+
+
+Lisäksi! Tarkista miten csrf käyttäytyy kun koodiin tuli csrfMiddleware-juttu (settings.py ja middleware.py) iframen toimimisen vuoksi. Eli selvitä miten csrf_exempt käyttäytyy eri tilanteissa. Voiko sen jättää pois (eli toimiiko ilman csrf_exemptiä) ja jos sen voi jättää pois, niin saako explisiittisesti korjattua jolalin %csrfllä?
+=> tarkistettu 19.7.-24 (testattu mm csrf_protect:illa) => @csfr_exempt täytyy olla, eli ei pelitä ilman vaikka csrfMiddleware

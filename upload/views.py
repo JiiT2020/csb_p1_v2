@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required 
+#from django.contrib.auth.decorators import login_required    #FLAW 3 FIX (2/3): enable this
 
 # Create your views here.
 
@@ -13,8 +13,8 @@ from .forms import UploadPoll
 #def upload_new_poll(request):
 #    return render(request, 'upload/upload_new_poll.html')
 
-@csrf_exempt
-@login_required
+@csrf_exempt    #FLAW 3 FIX (1/3): disable this
+#@login_required    #FLAW 3 FIX (3/3): enable this
 def upload_new_poll(request):
     if request.method == 'POST':
         form = UploadPoll(request.POST, request.FILES)

@@ -42,9 +42,9 @@ INSTALLED_APPS = [
     'polls.apps.PollsConfig',
     'django.contrib.sites',
     #'django_comments',          # en käyttänytkään tätä
-    'django_bleach',             # django_bleach is used for sanitizing end-user's comment-field
+    'django_bleach',        # django_bleach is used for sanitizing end-user's comment-field
 
-     # The following apps are required for django-allauth:
+    # Following 2 apps are required for django-allauth:
     'allauth',
     'allauth.account',
 
@@ -76,7 +76,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',      # csrf-fix uses this, i.e. django validates the form automatically on backend
+    'django.middleware.csrf.CsrfViewMiddleware',      # csrf-fix uses this, i.e. django validates the form automatically on backend (Note: was related to a flaw that I did not select to the "final five")
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
