@@ -4,12 +4,12 @@ import lxml.etree as ET
 from django.http import HttpResponse, HttpResponseRedirect
 from polls.models import Question, Choice
 from .forms import UploadPoll
-from django.views.decorators.csrf import csrf_exempt
-#from django.contrib.auth.decorators import login_required    #FLAW 3 FIX (2/3): enable this
+from django.views.decorators.csrf import csrf_exempt     #FLAW 3 (2/4). To fix flaw 3, disable this row
+#from django.contrib.auth.decorators import login_required    #FLAW 3 (4/4). To fix flaw 3, enable this row
 
 
-@csrf_exempt    #FLAW 3 FIX (1/3): disable this
-#@login_required    #FLAW 3 FIX (3/3): enable this
+@csrf_exempt    #FLAW 3 (1/4). To fix flaw 3, disable this row
+#@login_required    #FLAW 3 (3/4). To fix flaw 3, enable this row
 def upload_new_poll(request):
     if request.method == 'POST':
         form = UploadPoll(request.POST, request.FILES)
