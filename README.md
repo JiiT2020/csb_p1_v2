@@ -3,15 +3,17 @@
 
 LINK: [link to the repository](https://github.com/JiiT2020/csb_p1_v2/)
 
-This application is based on Django starter webapp (polls) [ref: https://docs.djangoproject.com/en/3.1/intro/tutorial01/] which was pointed out as a possible baseline for Project I in exercise instructions. I have extended the service with multiple features/functionalities and now briefly the user can: register to the service, login/logout, cast votes in various polls, leave anonymous comments per each poll after voting, search for polls and upload new polls using xml-templates.
+This application is based on Django starter webapp (polls) [ref: https://docs.djangoproject.com/en/3.1/intro/tutorial01/] which was pointed out as a possible baseline for Project I in exercise instructions. I have extended the service with multiple features/functionalities to make it more meaningful and now briefly the user can: register to the service, login/logout, cast votes in various polls, leave anonymous comments per each poll after voting, search for polls and upload new polls using xml-templates.
 
-I have chosen below five OWASP-flaws according to **OWASP 2017 top-ten**-list. However, there are other vulnerabilities and/or vulnerability strawmans in the code. I sketched those during the process but they didn't qualify / end up to my selection of five real flaws/threats. (For example out-dated components; although CVE-vulnerabilites became included they were not relevant for this service or my environment.)
+I have chosen below five OWASP-flaws according to **OWASP 2017 top-ten**-list. However, there are other vulnerabilities and/or vulnerability strawmans in the code. I sketched/trialled those during the process but they didn't qualify / end up to my selection of five real flaws/threats.
 
-Installation in virtual environment, just run:
+For installation, just run:
 ```bash
 ./setup.sh
 ```
-Service then runs in http://127.0.0.1:8000
+In case you have venv, you may also use virtual environment (venv) by editing the setup.sh lines 5&6.
+
+Once the installation is completed, the service is accessible in http://127.0.0.1:8000
 
 
 ## FLAW 1: A07:2017-CROSS-SITE SCRIPTING (XSS-injection)
