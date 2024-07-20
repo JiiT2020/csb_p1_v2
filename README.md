@@ -23,7 +23,7 @@ When user is leaving a comment, this flaw allows XSS-injection via comment's tex
 
 Fix is in [polls/models.py, row 27](https://github.com/JiiT2020/csb_p1_v2/blob/main/polls/models.py#L27) which shall replace row 26. On row 27 the BleachField() sanitizes (i.e. removes illegal characters from) the comment text field before it is stored into the database. Note that django-bleach is required: for the convenience it was already installed by requirements.txt, but it has to be imported as well (by uncommenting row [polls/models.py row 4](https://github.com/JiiT2020/csb_p1_v2/blob/main/polls/models.py#L4)) [Ref: https://django-bleach.readthedocs.io/_/downloads/en/latest/pdf/]
 
-[Also {{ comment.text|safe }} may be changed to {{ comment.text }} in [comment_thank_you.html](https://github.com/JiiT2020/csb_p1_v2/blob/main/polls/templates/polls/comment_thank_you.html#L19), BUT that is not enough to make the service safe since it does not prevent root cause injection.]
+[Also {{ comment.text|safe }} may be changed to {{ comment.text }} in [comment_thank_you.html](https://github.com/JiiT2020/csb_p1_v2/blob/main/polls/templates/polls/comment_thank_you.html#L19), BUT that is not enough to make the service safe since it does not prevent root cause injection.] <b>NOTE:</b> However, since <b>there is already XSS injected to the PREPOPULATED database</b>, alert will pop up if the client is not fixed. That is known thing and intentionally left in the demo database.
 
 
 ## FLAW 2: A04:2017-XML EXTERNAL ENTITIES
