@@ -1,7 +1,7 @@
 
 # MOOC CSB Project I
 
-LINK: [link to the repository](https://github.com/JiiT2020/csb_p1_v2/tree/master)
+LINK: [link to the repository](https://github.com/JiiT2020/csb_p1_v2/)
 
 This application is based on Django starter webapp (polls) [ref: https://docs.djangoproject.com/en/3.1/intro/tutorial01/] which was pointed out as a possible baseline for Project I in exercise instructions. I have extended the service with multiple features/functionalities and now briefly the user can: register to the service, login/logout, cast votes in various polls, leave anonymous comments per each poll after voting, search for polls and upload new polls using xml-templates.
 
