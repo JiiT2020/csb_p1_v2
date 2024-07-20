@@ -1,6 +1,6 @@
 <h1>Poll #{{ question.id }}: {{ question.question_text }}</h1>
 
-{% if user.is_authenticated %}
+{# {% if user.is_authenticated %} #} <!-- muistiin itselle: django-templaten kommentointi ei estä kaarisulkujen sisällön suorittamista, siksi vaatii eri tägäyksen -->
 
     {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
@@ -14,13 +14,13 @@
     <input type="submit" value="Vote">
     </form>
 
-{% else %}
-    <br/>
+{#  {% else %} #}  <!-- sama tägijuttu täällä (kuin ylimpänä) -->
+<!-- <br/>
     <p>Only registered users can vote. You need to sign in before you can vote.</p>
     <a href="{% url 'account_login' %}">Sign in</a>
     <br/>
-
-{% endif %}
+-->
+{#    {% endif %} #}
 
 <br/>
 <a href="{% url 'polls:index' %}">Cancel and go back to polls</a>

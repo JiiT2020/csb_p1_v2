@@ -16,7 +16,7 @@
 
         <!-- Row 19 below has XSS-vulnerability, because comment.text is treated as "safe", although XSS-injection may have (and has) happned elsewhere-->
         <!-- BUT fixing frontend is not enough, so real fix is in polls/models.py, see class Comment and BleachField() rows 26-27-->
-        <li>({{ comment.created_at }}): {{ comment.text|safe }} ({% if comment.name %} {{ comment.name }} ) Homepage: <a href="{% url 'polls:fetch_homepage' comment.id %}">{{ comment.url }}</a> {% else %} anonymous {% endif %}</li>
+        <li>({{ comment.created_at }}) {% if comment.name %} comment by <b>{{ comment.name }}</b> {% else %} comment by <b>anonymous</b> {% endif %}: {{ comment.text|safe }}  {% if comment.url %} <b>Homepage:</b> <a href="{% url 'polls:fetch_homepage' comment.id %}"> {{ comment.url }}</a> {% endif %}</li>
         <li style="display: none">Id: {{ comment.id }} ({{ comment.created_at }}): {{ comment.text|safe }} ({% if comment.name %} Name: {{ comment.name }} ) Email: {{ comment.email }} Homepage: <a href="{% url 'polls:fetch_homepage' comment.id %}">{{ comment.url }}</a> {% else %} anonymous {% endif %}<li>
 
         <script>var email = "{{ comment.email }}"; console.log("email: " +email)</script>
