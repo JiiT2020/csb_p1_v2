@@ -4,7 +4,7 @@ from .models import Question, Choice, Comment
 
 class ChoiceInline(admin.TabularInline):
     model = Choice
-    extra = 2          # pari tyhjää valinta-riviä admin-käyttöön
+    extra = 2          # pari tyhjää adminin käyttöön
 
 class CommentInline(admin.TabularInline):
     model = Comment
