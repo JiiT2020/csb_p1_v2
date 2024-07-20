@@ -1,17 +1,12 @@
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
-#from django.contrib.auth.decorators import login_required    #FLAW 3 FIX (2/3): enable this
-
-# Create your views here.
 
 import lxml.etree as ET
-#from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from polls.models import Question, Choice
 from .forms import UploadPoll
+from django.views.decorators.csrf import csrf_exempt
+#from django.contrib.auth.decorators import login_required    #FLAW 3 FIX (2/3): enable this
 
-#def upload_new_poll(request):
-#    return render(request, 'upload/upload_new_poll.html')
 
 @csrf_exempt    #FLAW 3 FIX (1/3): disable this
 #@login_required    #FLAW 3 FIX (3/3): enable this

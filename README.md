@@ -11,7 +11,7 @@ For installation, just run:
 ```bash
 ./setup.sh
 ```
-In case you have venv, you may also use virtual environment (venv) by editing the setup.sh lines 5&6.
+In case you have venv, you may also use virtual environment (venv) by uncommenting the setup.sh lines 4&5.
 
 Once the installation is completed, the service is accessible in http://127.0.0.1:8000
 
@@ -20,34 +20,34 @@ Once the installation is completed, the service is accessible in http://127.0.0.
 
 https://github.com/JiiT2020/csb_p1_v2/blob/master/polls/models.py#L26
 
-When user is leaving a comment, this flaw allows XSS-injection via comment's text field. Once a vulnerability is injected, it ends up to database and will be executed on any user's terminal who will be viewing comments. Frontend allows unsafe html-content to be rendered (see: {{ comment.text|safe }} on row 19 of [comment_thank_you.html](https://github.com/JiiT2020/csb_p1_v2/blob/master/polls/templates/polls/comment_thank_you.html#L19). However, fixing the frontend wouldn't fix the actual problem, which is in polls/models.py where plain text (text = models.TextField() on row 26) is accepted from the end-user and that input text is stored to database as such. This can be demonstrated by uploading a comment: ```<script>alert('xss-injection attack')</script>```. Once the comment is rendered/viewed anfter that, the script will be executed. (The not-so-malicious XSS-script is only for demonstrating purposes.)
+When user is leaving a comment, this flaw allows XSS-injection via comment's text field. Once a vulnerability is injected, it ends up to database and will be executed on any user's terminal who will be viewing comments. Frontend allows unsafe html-content to be rendered (see: {{ comment.text|safe }} on row 19 of [comment_thank_you.html](https://github.com/JiiT2020/csb_p1_v2/blob/master/polls/templates/polls/comment_thank_you.html#L19). However, fixing the frontend wouldn't fix the actual problem, which is in polls/models.py where plain text (text = models.TextField() on row 26) is accepted from the end-user and that input text is stored to database as such. This can be demonstrated by uploading a comment text: ```<script>alert('xss-injection attack')</script>```. Once the comment is rendered/viewed after that, the script will be executed. (The not-so-malicious XSS-script is only for demonstrating purposes.)
 
-Fix is in [polls/models.py, row 27](https://github.com/JiiT2020/csb_p1_v2/blob/master/polls/models.py#L27) which shall replace row 26. On row 27 the BleachField() sanitizes (i.e. removes illegal characters from) the comment text field before it is stored into the database.
+Fix is in [polls/models.py, row 27](https://github.com/JiiT2020/csb_p1_v2/blob/master/polls/models.py#L27) which shall replace row 26. On row 27 the BleachField() sanitizes (i.e. removes illegal characters from) the comment text field before it is stored into the database. Note that django-bleach is required: for the convenience it was already installed by requirements.txt, but it has to be imported as well (on [polls/models.py row 4](https://github.com/JiiT2020/csb_p1_v2/blob/polls/models.py#L4))
 
 [Also {{ comment.text|safe }} may be changed to {{ comment.text }} in [comment_thank_you.html](https://github.com/JiiT2020/csb_p1_v2/blob/master/polls/templates/polls/comment_thank_you.html#L19), BUT that is not enough to make the service safe since it does not prevent root cause injection.]
 
 
 ## FLAW 2: A04:2017-XML EXTERNAL ENTITIES
 
-https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L24
+https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L19
 
 Creating new votes may be done by uploading an xml-file to the poll app web page. Uploading happens via 127.0.0.1:8000/upload (note: user has to be signed in first). In folder utilities/ there is one legitimate xml-file [question_legit.xml](https://github.com/JiiT2020/csb_p1_v2/blob/master/utils/question_legit.xml) which is a valid template for uploading polls in xml-format and one malicious xml-file [question_malicious.xml](https://github.com/JiiT2020/csb_p1_v2/blob/master/utils/question_malicious.xml). If the malicious xml-file is uploaded, malicious code is executed. In this example case, code etc/passwd file's content is read and written to a new poll's subject. I.e. passwd-file is compromised and it can then be seen via polls if user browses to http://127.0.0.1:8000/polls/. (The not-so-malicious xml-file is only for demonstarting purposes.)
 
-This is fixed by disabling the XML-parser to resolve entities (setting it to False). Fix on [row 25 of upload/views.py](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L24) which replaces row 24.
+This is fixed by disabling the XML-parser to resolve entities (setting it to False). Fix on [row 20 of upload/views.py](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L20) which replaces row 19.
 
 
 ## FLAW 3: A05:2017-BROKEN ACCESS CONTROL (+CSRF)
 
-https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L16
+https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L11
 and
-https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L17
+https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L12
 
-This vulnerability utilizes CSRF and demonstration also requires exmpting it in one place. Since Django framework takes care of CSRF automatically, it has to be exempt. CSRF is exempt for upload_new_poll-function in upload/views.py ([rows 2](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L2) and [16](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L16)). (Using CSRF as a flaw is explicitly allowed in the exercise instructions, so here I'm actually learning the impact of two (2) flaws.)
+This vulnerability utilizes CSRF and demonstration also requires exmpting it in one place. Since Django framework takes care of CSRF automatically, it has to be exempt. CSRF is exempt for upload_new_poll-function in upload/views.py ([rows 7](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L7) and [11](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L11)). (Using CSRF as a flaw is explicitly allowed in the exercise instructions, so here I'm actually learning the impact of two (2) flaws.)
 
 Anybody can vote anonymously, but uploading new polls should be possible for registered users only. Uploading happens via 127.0.0.1:8000/upload. Now the upload/-page requests to sign in, if the user is not yet signed in. But vulnerability is that only the client checks if the user is signed in or not. So, by using e.g. Burpsuite a new_vote-xml-file may be POSTed to the backend without singing in. This may be demonstrated by copying a valid POST request (of a signed-in user), altering the poll questions and choices, and then POSTing it to backend (to 127.0.0.1:800/upload) once the user is signed out.
 
-This flaw is fixed by verifying in backend that the user is signed in. Django provides a "user.is_authenticated"-attribute for that. It is imported [(upload/views.py row 3)](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L3) and taken into use [(upload/views.py row 17)](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L17).
-Also, the exemption of not demanding CSRF has to be removed ([upload/views.py, deleting row 16](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L16) (and [on row 2](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L2))).
+This flaw is fixed by verifying in backend that the user is signed in. Django provides a "user.is_authenticated"-attribute for that. It is imported [(upload/views.py row 8)](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L8) and taken into use [(upload/views.py row 12)](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L12).
+Also, the exemption of not demanding CSRF has to be removed ([upload/views.py, deleting row 11](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L11) (and [on row 7](https://github.com/JiiT2020/csb_p1_v2/blob/master/upload/views.py#L7))).
 
 
 ## FLAW 4: A03:2017-SENSITIVE DATA EXPOSURE
