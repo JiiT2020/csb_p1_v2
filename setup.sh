@@ -7,7 +7,7 @@ source poll_app/bin/activate    # this setup (lines 4&5) creates a virtual envir
 pip install -r requirements.txt
 python3 manage.py makemigrations
 python3 manage.py migrate
-python3 manage.py loaddata utils/initiate_db.json  # populates the db with some initial polls
+python3 manage.py loaddata utils/initiate_db.json  # populates the db with some initial polls (which contains a couple <script>alert('XSS')</script> popups but nothing more serious)
 python3 manage.py runserver
 
 # note to self: to restart venv-testing from scratch:
