@@ -7,7 +7,7 @@ This application is based on Django starter webapp (polls) [ref: https://docs.dj
 
 I have chosen below five OWASP-flaws according to **OWASP 2017 top-ten**-list. However, there are other vulnerabilities and/or vulnerability strawmans in the code. I sketched/trialled those during the process but they didn't qualify / end up to my selection of five real flaws/threats. Service is not certified for US-governmental polling use yet, i.e. some UI-flows may be incomplete or have occational other bugs...
 
-For installation, it is highly recommended to use python3-venv (virtual environment). Once venv is installed, just run:
+For installation, it is recommended to use python3-venv (virtual environment). Once venv is installed, just run:
 ```bash
 ./setup.sh
 ```
@@ -70,6 +70,6 @@ Having debugging set to "True" anybody can see details of error messages without
 
 In this particular service's case, end user may e.g. try some unexisting path, like: http://127.0.0.1:8000/polls/unexisting_path which discloses lots of hints about how the service works, it's structure etc. It for example reveals that there is a path admin/. Having found out that, the attacker may also try default username/password and find out that it actually is default: admin/admin. That is another flaw in this same category "A06: Security Misconfiguration".
 
-Fix is to set the debugging to False [(in settings.py, row 28)](https://github.com/JiiT2020/csb_p1_v2/blob/main/mysite/settings.py#L28) (and comment out row 26; or alternatively just change True to False). Setting debugging to False requires ALLOWED_HOSTS to be set as well. Otherwise the compiler gives an error. Allowed host(s) can be set simply e.g. to 127.0.0.1 which enables debugging for localhost [(line 29)](https://github.com/JiiT2020/csb_p1_v2/blob/main/mysite/settings.py#L29). Furthermore, the admin's default password has to be changed to more complex one, e.g. via admin page. [Ref: django deployment checklist https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/#debug].
+Fix is to set the debugging to False [(in settings.py, row 28)](https://github.com/JiiT2020/csb_p1_v2/blob/main/mysite/settings.py#L28) (and comment out [row 26](https://github.com/JiiT2020/csb_p1_v2/blob/f85f155733c7e66dc21a683b71057e83b68aceff/mysite/settings.py#L26); or alternatively just change True to False). Setting debugging to False requires ALLOWED_HOSTS to be set as well. Otherwise the compiler gives an error. Allowed host(s) can be set simply e.g. to 127.0.0.1 which enables debugging for localhost [(line 29)](https://github.com/JiiT2020/csb_p1_v2/blob/main/mysite/settings.py#L29). Furthermore, the admin's default password has to be changed to more complex one, e.g. via admin page. [Ref: django deployment checklist https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/#debug].
 
 The real need for enabling access to admin-page should also be re-evaluated and in case if accessing it remotely is not a mandatory feature, it could be removed e.g. by commenting the admin/-path out [from mysite/urls.py, row 21](https://github.com/JiiT2020/csb_p1_v2/blob/9c266d563bd251f832aea6ed998f9a22008110fc/mysite/urls.py#L21).
