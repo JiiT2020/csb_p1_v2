@@ -9,10 +9,10 @@ I have chosen below five OWASP-flaws according to **OWASP 2017 top-ten**-list. H
 
 For installation, it is highly recommended to use python3-venv (virtual environment). Once venv is installed, just run:
 ```bash
-bash ./setup.sh
+./setup.sh
 ```
 (If venv is not used, comment out rows 4 and 5 in setup.sh before executing it.)
-After the installation is completed, the db is pre-populated with a few polls and the service is accessible in http://127.0.0.1:8000
+After the installation is completed, the db is pre-populated with a few polls and the service is accessible in http://127.0.0.1:8000.
 
 
 ## FLAW 1: A07:2017-CROSS-SITE SCRIPTING (XSS-injection)
@@ -23,7 +23,7 @@ When user is leaving a comment, this flaw allows XSS-injection via comment's tex
 
 Fix is in [polls/models.py, row 27](https://github.com/JiiT2020/csb_p1_v2/blob/main/polls/models.py#L27) which shall replace row 26. On row 27 the BleachField() sanitizes (i.e. removes illegal characters from) the comment text field before it is stored into the database. Note that django-bleach is required: for the convenience it was already installed by requirements.txt, but it has to be imported as well (by uncommenting row [polls/models.py row 4](https://github.com/JiiT2020/csb_p1_v2/blob/main/polls/models.py#L4)) [Ref: https://django-bleach.readthedocs.io/_/downloads/en/latest/pdf/]
 
-[Also {{ comment.text|safe }} may be changed to {{ comment.text }} in [comment_thank_you.html](https://github.com/JiiT2020/csb_p1_v2/blob/main/polls/templates/polls/comment_thank_you.html#L19), BUT that is not enough to make the service safe since it does not prevent root cause injection.] <b>NOTE:</b> However, since <b>there is already XSS injected to the PREPOPULATED database</b>, alert will pop up if the client is not fixed. That is known thing and intentionally left in the demo database.
+[Also {{ comment.text|safe }} may be changed to {{ comment.text }} in [comment_thank_you.html](https://github.com/JiiT2020/csb_p1_v2/blob/main/polls/templates/polls/comment_thank_you.html#L19), BUT that is not enough to make the service safe since it does not prevent root cause injection.] <b>NOTE:</b> However, since <b>there is already XSS injected to the PREPOPULATED database</b>, alert may in some ready-made poll's case pop up, if the client is not fixed. That is known thing and intentionally left in the demo database.
 
 
 ## FLAW 2: A04:2017-XML EXTERNAL ENTITIES
@@ -46,7 +46,7 @@ This vulnerability utilizes CSRF and demonstration also requires exempting it in
 Anybody can vote anonymously, but uploading new polls should be possible for registered users only. Uploading happens via 127.0.0.1:8000/upload. Now the upload/-page requests to sign in, if the user is not yet signed in. But vulnerability is that only the client checks if the user is signed in or not. So, by using e.g. Burpsuite a new_vote-xml-file may be POSTed to the backend without singing in. This may be demonstrated by copying a valid POST request (of a signed-in user), altering the poll questions and choices, and then POSTing it to backend (to 127.0.0.1:800/upload) once the user is signed out.
 
 This flaw is fixed by verifying in backend that the user is signed in. Django provides a "user.is_authenticated"-attribute for that. It is imported [(upload/views.py row 8)](https://github.com/JiiT2020/csb_p1_v2/blob/main/upload/views.py#L8) and taken into use [(upload/views.py row 12)](https://github.com/JiiT2020/csb_p1_v2/blob/main/upload/views.py#L12).
-Also, the exemption of not demanding CSRF has to be removed ([upload/views.py, deleting row 11](https://github.com/JiiT2020/csb_p1_v2/blob/main/upload/views.py#L11) (and [on row 7](https://github.com/JiiT2020/csb_p1_v2/blob/main/upload/views.py#L7))).
+Also, the exemption of not demanding CSRF has to be removed ([upload/views.py, deleting row 11](https://github.com/JiiT2020/csb_p1_v2/blob/main/upload/views.py#L11) (and [deleting row 7](https://github.com/JiiT2020/csb_p1_v2/blob/main/upload/views.py#L7))).
 
 
 ## FLAW 4: A03:2017-SENSITIVE DATA EXPOSURE
@@ -55,7 +55,7 @@ https://github.com/JiiT2020/csb_p1_v2/blob/main/polls/templates/polls/comment_th
 and
 https://github.com/JiiT2020/csb_p1_v2/blob/main/polls/templates/polls/comment_thank_you.html#L22
 
-Sensitive data is leaking due to forgotten development phase console.logs and ```<li style="display: none">```-component in comment_thank_you.html. Such kind of lines are typically added in development phase, to see what values certain variables are holding at a time being, e.g. if the db has returned correct values needed at certain point of UI-flow. Whoknows what the developer's aim has been here, nevertheless due to these, viewing the page via browser's Developer tools, email-addresses of the commentators may be seen although emails are supposed to be sensitive&hidden - and explicitly unassociated with anonymous comments.
+Sensitive data is leaking due to forgotten development phase console.logs and ```<li style="display: none">```-component in comment_thank_you.html. Such kind of lines are typically added in development phase, to see what values certain variables are holding at a time being, e.g. if the db has returned correct values needed at certain point of UI-flow. Whoknows what the developer's aim has been here, nevertheless due to these, viewing the page via browser's Developer tools (or Inspect), email-addresses of the commentators may be seen although emails are supposed to be sensitive&hidden - and explicitly unassociated from anonymous comments.
 
 Fix is to [remove the script which causes console.logging (row 22)](https://github.com/JiiT2020/csb_p1_v2/blob/main/polls/templates/polls/comment_thank_you.html#L22) and to [remove the ```<li style="display: none">``` tagged text (row 20)](https://github.com/JiiT2020/csb_p1_v2/blob/main/polls/templates/polls/comment_thank_you.html#L20), as they are obsolete in production and the developer has been utilizing them in development phase.
 
@@ -68,6 +68,8 @@ Debugging has been forgotten to "True" in settings.py, row 26. (Furthermore, def
 
 Having debugging set to "True" anybody can see details of error messages without any limitations. This may lead to disclosure of sensitive information about for example file-/path-names, environmental variables or even maybe API-keys or alike.
 
-In this particular service, end user may e.g. try some unexisting path, like: http://127.0.0.1:8000/polls/unexisting_path which discloses lots of hints about how the service works, it's structure etc. It for example reveals that there is a path admin/. Having found out that, the attacker may also try default username/password and find out that it actually is default: admin/admin. That is another flaw in this very same category "A06: Security Misconfiguration".
+In this particular service's case, end user may e.g. try some unexisting path, like: http://127.0.0.1:8000/polls/unexisting_path which discloses lots of hints about how the service works, it's structure etc. It for example reveals that there is a path admin/. Having found out that, the attacker may also try default username/password and find out that it actually is default: admin/admin. That is another flaw in this same category "A06: Security Misconfiguration".
 
-Fix is to [set the debugging to False (line 28)](https://github.com/JiiT2020/csb_p1_v2/blob/main/mysite/settings.py#L28) (and comment out row 26; or just change True to False). Setting debugging to False requires ALLOWED_HOSTS to be set as well. Otherwise the compiler gives an error. Allowed host(s) can be set simply e.g. to 127.0.0.1 which enables debugging for localhost [(line 29)](https://github.com/JiiT2020/csb_p1_v2/blob/main/mysite/settings.py#L29). Furthermore, the admin's default password has to be changed to more complex one, e.g. via admin page. [Ref: django deployment checklist https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/#debug]
+Fix is to set the debugging to False [(in settings.py, row 28)](https://github.com/JiiT2020/csb_p1_v2/blob/main/mysite/settings.py#L28) (and comment out row 26; or alternatively just change True to False). Setting debugging to False requires ALLOWED_HOSTS to be set as well. Otherwise the compiler gives an error. Allowed host(s) can be set simply e.g. to 127.0.0.1 which enables debugging for localhost [(line 29)](https://github.com/JiiT2020/csb_p1_v2/blob/main/mysite/settings.py#L29). Furthermore, the admin's default password has to be changed to more complex one, e.g. via admin page. [Ref: django deployment checklist https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/#debug].
+
+The real need for enabling access to admin-page should also be re-evaluated and in case if accessing it remotely is not a mandatory feature, it could be removed e.g. by commenting the admin/-path out [from mysite/urls.py, row 21](https://github.com/JiiT2020/csb_p1_v2/blob/9c266d563bd251f832aea6ed998f9a22008110fc/mysite/urls.py#L21).
