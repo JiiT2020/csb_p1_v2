@@ -11,8 +11,7 @@ For installation, it is recommended to use python3-venv (virtual environment). O
 ```bash
 ./setup.sh
 ```
-(If venv is not used, comment out rows 4 and 5 in setup.sh before executing it.)
-After the installation is completed, the db is pre-populated with a few polls and the service is accessible in http://127.0.0.1:8000.
+If venv is not used, comment out rows 4 and 5 in setup.sh before executing it. After the installation is completed, the db is pre-populated with a few polls and the service is accessible in http://127.0.0.1:8000. Note: using the pre-populated db is not mandatory, db.json is available for convenience. It can be skipped by commenting out row 10 in setup.sh.
 
 
 ## FLAW 1: A07:2017-CROSS-SITE SCRIPTING (XSS-injection)
