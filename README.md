@@ -5,7 +5,7 @@ LINK: [link to the repository](https://github.com/JiiT2020/csb_p1_v2/)
 
 This application is based on Django starter webapp (polls) [ref: https://docs.djangoproject.com/en/3.1/intro/tutorial01/] which was pointed out as a possible baseline for Project I in exercise instructions. I have extended the service with multiple features/functionalities to make it more meaningful and now briefly the user can: register to the service, login/logout, cast votes in various polls, leave anonymous comments per each poll after voting, search for polls and upload new polls using xml-templates.
 
-I have chosen below five OWASP-flaws according to **OWASP 2017 top-ten**-list. However, there are other vulnerabilities and/or vulnerability strawmans in the code. I sketched/trialled those during the process but they didn't qualify / end up to my selection of five real flaws/threats. Service is not certified for US-governmental polling use yet, i.e. some UI-flows may be incomplete or have occational other bugs...
+I have chosen below five OWASP-flaws according to **OWASP 2017 top-ten**-list. However, there are other vulnerabilities and/or vulnerability strawmans in the code. I sketched/trialled those during the process but they didn't qualify / end up to my selection of five real flaws/threats.
 
 For installation, it is recommended to use python3-venv (virtual environment). Once venv is installed, just run:
 ```bash
@@ -29,7 +29,7 @@ Fix is in [polls/models.py, row 27](https://github.com/JiiT2020/csb_p1_v2/blob/m
 
 https://github.com/JiiT2020/csb_p1_v2/blob/main/upload/views.py#L19
 
-Creating new votes may be done by uploading an xml-file to the poll app web page. Uploading happens via 127.0.0.1:8000/upload (note: user has to be signed in first). In folder utilities/ there is one legitimate xml-file [question_legit.xml](https://github.com/JiiT2020/csb_p1_v2/blob/main/utils/question_legit.xml) which is a valid template for uploading polls in xml-format and one malicious xml-file [question_malicious.xml](https://github.com/JiiT2020/csb_p1_v2/blob/main/utils/question_malicious.xml). If the malicious xml-file is uploaded, malicious code is executed. In this example case, code etc/passwd file's content is read and written to a new poll's subject. I.e. passwd-file is compromised and it can then be seen via polls if user browses to http://127.0.0.1:8000/polls/. (The not-so-malicious xml-file is only for demonstarting purposes.)
+Creating new votes may be done by uploading an xml-file to the poll app web page. Uploading happens via 127.0.0.1:8000/upload (note: user has to be signed in first). In folder utilities/ there is one legitimate xml-file [question_legit.xml](https://github.com/JiiT2020/csb_p1_v2/blob/main/utils/question_legit.xml) which is a valid template for uploading polls in xml-format and one malicious xml-file [question_malicious.xml](https://github.com/JiiT2020/csb_p1_v2/blob/main/utils/question_malicious.xml). If the malicious xml-file is uploaded, malicious code is executed. In this example case, code etc/passwd file's content is read and written to a new poll's subject line. I.e. passwd-file is compromised and it can then be seen via polls if user browses to http://127.0.0.1:8000/polls/. (The not-so-malicious xml-file is only for demonstarting purposes.)
 
 This is fixed by disabling the XML-parser to resolve entities (setting it to False). Fix on [row 20 of upload/views.py](https://github.com/JiiT2020/csb_p1_v2/blob/main/upload/views.py#L20) which replaces row 19. [Ref: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/sast-policies/python-policies/sast-policy-50#fix---buildtime]
 
@@ -65,7 +65,7 @@ https://github.com/JiiT2020/csb_p1_v2/blob/main/mysite/settings.py#L26
 
 Debugging has been forgotten to "True" in settings.py, row 26. (Furthermore, default password for "admin" has been left to the service.)
 
-Having debugging set to "True" anybody can see details of error messages without any limitations. This may lead to disclosure of sensitive information about for example file-/path-names, environmental variables or even maybe API-keys or alike.
+Having debugging set to "True" anybody can see details of error messages without limitations. This may lead to disclosure of sensitive information about for example file-/path-names, environmental variables or even maybe API-keys or alike.
 
 In this particular service's case, end user may e.g. try some unexisting path, like: http://127.0.0.1:8000/polls/unexisting_path which discloses lots of hints about how the service works, it's structure etc. It for example reveals that there is a path admin/. Having found out that, the attacker may also try default username/password and find out that it actually is default: admin/admin. That is another flaw in this same category "A06: Security Misconfiguration".
 
